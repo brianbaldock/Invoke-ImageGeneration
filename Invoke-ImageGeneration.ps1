@@ -80,6 +80,7 @@ function Invoke-ImageGeneration {
         Jane,Doe,Jane Doe,Female
 
     .EXAMPLE
+        . .\Invoke-ImageGeneration.ps1
         Invoke-ImageGeneration -OpenAPIKey "OPENAPI-KEY-HERE" -CSVPath "C:\UserNames.csv" -ProfilePicturePath "C:\ProfilePictures" -LogPath "C:\"
     #>
 
