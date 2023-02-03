@@ -11,6 +11,7 @@
     #>
     return "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
 }
+
 function Save-Output {
     <#
         .SYNOPSIS
@@ -81,7 +82,7 @@ function Invoke-ImageGeneration {
 
     .EXAMPLE
         . .\Invoke-ImageGeneration.ps1
-        Invoke-ImageGeneration -OpenAPIKey "OPENAPI-KEY-HERE" -CSVPath "C:\UserNames.csv" -ProfilePicturePath "C:\ProfilePictures" -LogPath "C:\"
+        Invoke-ImageGeneration -OpenAPIKey "OPENAPI-KEY-HERE" -CSVPath "C:\UserNames.csv" -ProfilePicturePath "C:\ProfilePictures" -LogPath "C:\" -Verbose
     #>
 
     [CmdletBinding()]
@@ -123,7 +124,7 @@ function Invoke-ImageGeneration {
             }
         }
         catch{
-            write-host -ForegroundColor Red -Object "Something happened, $($_.ErrorDetails)"
+            Write-Verbose -ForegroundColor Red -Object "Something happened, $($_.ErrorDetails)"
             break   
         }
     }
@@ -157,7 +158,7 @@ function Invoke-ImageGeneration {
                         try{
                             Invoke-WebRequest -Uri $imageUrl -UseBasicParsing -OutFile "$($ProfilePicturePath)\$($Person.DisplayName).png"
                             if(!(Test-Path "$($ProfilePicturePath)\$($Person.DisplayName).png")) {
-                                Write-Host -ForegroundColor Red -Object "Something happened, check log at $($LogPath)\Exec.log"
+                                Write-Verbose "Something happened, check log at $($LogPath)\Exec.log"
                                 Save-Output -LogLocation $LogPath -InputString "$(Get-TimeStamp): ERROR: Something happened, check log at $($LogPath)\Exec.log"
                                 break
                             }
@@ -166,25 +167,25 @@ function Invoke-ImageGeneration {
                             }
                         }
                         catch{
-                            Write-Host -ForegroundColor Red -Object "Something happened, check log at $($LogPath)\Exec.log"
+                            Write-Verbose -ForegroundColor Red -Object "Something happened, check log at $($LogPath)\Exec.log"
                             Save-Output -LogLocation $LogPath -InputString "$(Get-TimeStamp): ERROR: $($_.ErrorDetails.Message)"
                             break
                         }
                     }
                     catch{
-                        Write-Host -ForegroundColor Red -Object "Something happened, check log at $($LogPath)\Exec.log"
+                        Write-Verbose "Something happened, check log at $($LogPath)\Exec.log"
                         Save-Output -LogLocation $LogPath -InputString "$(Get-TimeStamp): ERROR: $($_.ErrorDetails.Message)"
                         break
                     }
                 }
                 else {
-                    Write-Host -ForegroundColor Red "Image for $($Person.DisplayName) already exists"
+                    Write-Verbose "Image for $($Person.DisplayName) already exists"
                     Save-Output -LogLocation $LogPath -InputString "$(Get-TimeStamp): ERROR: Image for $($Person.DisplayName) already exists"
                 }
             }
         }
         catch{
-            Write-Host -ForegroundColor Red -Object "Something happened, check log at $($LogPath)\Exec.log"
+            Write-Verbose "Something happened, check log at $($LogPath)\Exec.log"
             Save-Output -LogLocation $LogPath -InputString "$(Get-TimeStamp): ERROR: $($_.ErrorDetails.Message)"
             break
         }
